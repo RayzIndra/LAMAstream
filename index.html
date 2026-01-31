@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAMAstream — L'archive ultime du streaming libre</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #ff0a78;
+            --neon-cyan: #00f3ff;
+            --bg-dark: #050507;
+            --card-bg: #111116;
+            --glass: rgba(255, 255, 255, 0.03);
+            --text-main: #ffffff;
+            --text-dim: #a0a0aa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Effets de Fond --- */
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 10, 120, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: -1;
+        }
+
+        /* --- Header & Nav --- */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(5, 5, 7, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1300px; margin: 0 auto; padding: 0 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 900;
+            text-decoration: none; color: white; display: flex; align-items: center; gap: 10px;
+        }
+
+        .logo span { color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink); }
+
+        .search-bar {
+            background: var(--glass); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.6rem 1.2rem; border-radius: 50px; width: 300px;
+            color: white; outline: none; transition: 0.3s;
+        }
+
+        .search-bar:focus { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 4rem 2rem; text-align: center;
+            background: radial-gradient(circle at center, rgba(255, 10, 120, 0.1) 0%, transparent 70%);
+        }
+
+        .hero h1 { font-family: 'Orbitron'; font-size: 3.5rem; margin-bottom: 1rem; }
+        .hero p { color: var(--text-dim); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+
+        /* --- Filtres --- */
+        .filters {
+            display: flex; justify-content: center; gap: 10px; margin: 2rem 0; flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--glass); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white; padding: 0.5rem 1.5rem; border-radius: 50px; cursor: pointer;
+            font-family: 'Orbitron'; font-size: 0.8rem; transition: 0.3s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--neon-pink); border-color: var(--neon-pink); transform: translateY(-2px);
+        }
+
+        /* --- Grille de Films --- */
+        .main-container { max-width: 1300px; margin: 0 auto; padding: 0 2rem 5rem; }
+        
+        .movie-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2rem;
+        }
+
+        .movie-card {
+            background: var(--card-bg); border-radius: 16px; overflow: hidden;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.05); position: relative;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.03); border-color: var(--neon-cyan);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-img {
+            height: 350px; width: 100%; object-fit: cover; background: #1a1a20;
+            display: flex; align-items: center; justify-content: center; font-size: 4rem;
+        }
+
+        .card-body { padding: 1.5rem; }
+        .card-category { color: var(--neon-cyan); font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .card-title { font-family: 'Orbitron'; font-size: 1.1rem; margin: 0.5rem 0; }
+
+        .btn-play {
+            width: 100%; background: linear-gradient(90deg, var(--neon-pink), #b829ff);
+            border: none; color: white; padding: 0.8rem; border-radius: 8px;
+            font-weight: bold; cursor: pointer; margin-top: 1rem; font-family: 'Orbitron';
+        }
+
+        /* --- Modal Vidéo Pro --- */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.98); z-index: 1000;
+            display: none; align-items: center; justify-content: center;
+        }
+
+        .modal.active { display: flex; animation: fadeIn 0.3s forwards; }
+
+        .modal-content { width: 90%; max-width: 1000px; position: relative; }
+        
+        video { width: 100%; border-radius: 12px; border: 1px solid var(--neon-cyan); box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); }
+
+        .close-modal {
+            position: absolute; top: -50px; right: 0; color: white;
+            font-size: 2.5rem; cursor: pointer; transition: 0.3s;
+        }
+        .close-modal:hover { color: var(--neon-pink); transform: rotate(90deg); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-container { flex-direction: column; gap: 1rem; }
+            .search-bar { width: 100%; }
+            .hero h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+
+    <header>
+        <nav class="nav-container">
+            <a href="#" class="logo">🦙 LAMA<span>stream</span></a>
+            <input type="text" class="search-bar" id="searchInput" placeholder="Rechercher un film ou une animation...">
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>LAMA<span>stream</span></h1>
+        <p>Découvrez une sélection de chefs-d'œuvre du domaine public et d'animations indépendantes en haute définition.</p>
+    </section>
+
+    <div class="main-container">
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterMovies('all')">Tous</button>
+            <button class="filter-btn" onclick="filterMovies('Animation')">Animation</button>
+            <button class="filter-btn" onclick="filterMovies('SF')">Science-Fiction</button>
+            <button class="filter-btn" onclick="filterMovies('Action')">Action</button>
+        </div>
+
+        <div class="movie-grid" id="movieGrid">
+            </div>
+    </div>
+
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeVideo()">&times;</span>
+            <video id="player" controls poster=""></video>
+            <div style="margin-top: 1.5rem;">
+                <h2 id="videoTitle" style="font-family: 'Orbitron'; color: var(--neon-cyan);"></h2>
+                <p id="videoDesc" style="color: var(--text-dim); margin-top: 10px;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Base de données extensible ---
+        const movieDB = [
+            { id: 1, title: "Big Buck Bunny", cat: "Animation", desc: "Un lapin géant affronte trois rongeurs maléfiques dans cette démo technique culte.", icon: "🐰", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
+            { id: 2, title: "Sintel", cat: "Animation", desc: "Une quête bouleversante à travers des terres enneigées pour retrouver un bébé dragon.", icon: "🐉", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" },
+            { id: 3, title: "Tears of Steel", cat: "SF", desc: "Dans un futur proche à Amsterdam, un groupe de combattants tente de sauver le monde.", icon: "⚙️", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" },
+            { id: 4, title: "Elephants Dream", cat: "SF", desc: "Le premier film 'open movie' au monde, une aventure surréaliste dans une machine infinie.", icon: "🐘", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" },
+            { id: 5, title: "Madness Combat 1", cat: "Action", desc: "L'épisode originel qui a lancé la saga culte sur Newgrounds.", icon: "🔴", url: "https://ia801405.us.archive.org/21/items/madness-combat-1/Madness%20Combat%201.mp4" }
+        ];
+
+        const grid = document.getElementById('movieGrid');
+        const modal = document.getElementById('videoModal');
+        const player = document.getElementById('player');
+        const searchInput = document.getElementById('searchInput');
+
+        // --- Rendu des cartes ---
+        function renderMovies(movies) {
+            grid.innerHTML = '';
+            movies.forEach(movie => {
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.innerHTML = `
+                    <div class="card-img">${movie.icon}</div>
+                    <div class="card-body">
+                        <span class="card-category">${movie.cat}</span>
+                        <h3 class="card-title">${movie.title}</h3>
+                        <button class="btn-play" onclick="openVideo(${movie.id})">REGARDER</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- Logique du Modal ---
+        function openVideo(id) {
+            const movie = movieDB.find(m => m.id === id);
+            document.getElementById('videoTitle').innerText = movie.title;
+            document.getElementById('videoDesc').innerText = movie.desc;
+            player.src = movie.url;
+            modal.classList.add('active');
+            player.play();
+        }
+
+        function closeVideo() {
+            modal.classList.remove('active');
+            player.pause();
+            player.src = "";
+        }
+
+        // --- Filtres et Recherche ---
+        function filterMovies(category) {
+            // Update buttons style
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText === category || (category === 'all' && btn.innerText === 'Tous'));
+            });
+
+            if(category === 'all') return renderMovies(movieDB);
+            const filtered = movieDB.filter(m => m.cat === category);
+            renderMovies(filtered);
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = movieDB.filter(m => m.title.toLowerCase().includes(term));
+            renderMovies(filtered);
+        });
+
+        // Initialisation
+        renderMovies(movieDB);
+
+        // Fermeture modal si clic à côté
+        window.onclick = (e) => { if(e.target == modal) closeVideo(); }
+    </script>
+</body>
+</html>
