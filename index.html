@@ -1,164 +1,82 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LAMAstream</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAMAstream | Streaming Premium</title>
+    <style>
+        :root { --n-red: #E50914; --n-black: #141414; }
+        body { background: var(--n-black); color: #fff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; }
+        
+        /* Navbar style Netflix */
+        nav { 
+            position: fixed; top: 0; width: 100%; z-index: 1000; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            display: flex; align-items: center; padding: 20px 4%; transition: 0.5s;
+        }
+        .logo { color: var(--n-red); font-size: 2rem; font-weight: bold; text-decoration: none; margin-right: 25px; }
+        
+        /* Banner */
+        .banner {
+            height: 70vh; background-size: cover; background-position: center;
+            background-image: linear-gradient(to top, var(--n-black), transparent), url('https://w0.peakpx.com/wallpaper/559/315/wallpaper-solo-leveling-sung-jin-woo-manhwa-blue-lightning.jpg');
+            display: flex; flex-direction: column; justify-content: center; padding-left: 4%;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-<style>
-body {
-    margin: 0;
-    font-family: Inter, sans-serif;
-    background: #0f1115;
-    color: #eaeaea;
-}
-
-header {
-    padding: 16px 5%;
-    border-bottom: 1px solid #1c1f26;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.3rem;
-    font-weight: 600;
-}
-
-input {
-    background: #151821;
-    border: 1px solid #222632;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 4px;
-}
-
-.container {
-    padding: 30px 5%;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 20px;
-}
-
-.card {
-    cursor: pointer;
-}
-
-.card img {
-    width: 100%;
-    height: 240px;
-    object-fit: cover;
-    border-radius: 6px;
-    transition: transform .2s;
-}
-
-.card:hover img {
-    transform: scale(1.05);
-}
-
-.card h3 {
-    font-size: 0.85rem;
-    margin-top: 6px;
-    color: #cfcfcf;
-}
-
-/* MODAL */
-.modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.95);
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-
-.player {
-    width: 90%;
-    max-width: 900px;
-}
-
-video, iframe {
-    width: 100%;
-    aspect-ratio: 16/9;
-    border-radius: 6px;
-}
-
-.close {
-    text-align: right;
-    margin-bottom: 8px;
-    cursor: pointer;
-    color: #aaa;
-}
-</style>
+        /* Liste de films (Rows) */
+        .row { margin: 20px 0 20px 4%; }
+        .row-title { font-size: 1.5vw; font-weight: bold; margin-bottom: 10px; }
+        .posters { display: flex; overflow-y: hidden; overflow-x: scroll; padding: 20px 0; scrollbar-width: none; }
+        .posters::-webkit-scrollbar { display: none; }
+        
+        .poster {
+            max-height: 250px; object-fit: contain; margin-right: 10px;
+            transition: transform 450ms; cursor: pointer; border-radius: 4px;
+        }
+        .poster:hover { transform: scale(1.15); opacity: 1; }
+        
+        .btn-play { 
+            background: white; color: black; padding: 10px 25px; border-radius: 4px; 
+            text-decoration: none; font-weight: bold; margin-top: 15px; width: fit-content;
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-    <div class="logo">LAMAstream</div>
-    <input id="search" placeholder="Rechercher">
+<nav id="navbar">
+    <a href="#" class="logo">LAMAstream</a>
+    <span style="color: #e5e5e5; font-size: 0.9rem;">Accueil | Séries | Films | Nouveautés</span>
+</nav>
+
+<header class="banner">
+    <h1 style="font-size: 4rem; margin: 0;">SOLO LEVELING</h1>
+    <p style="max-width: 500px; font-size: 1.2rem;">Le monde a changé. Des portails sont apparus, et avec eux, des monstres. Suivez l'ascension du plus faible des chasseurs.</p>
+    <a href="https://animesama.tv/search?q=solo%20leveling" target="_blank" class="btn-play">▶ Lecture</a>
 </header>
 
-<div class="container">
-    <div class="grid" id="grid"></div>
+<div class="row">
+    <div class="row-title">Animés Populaires (Anime Sama)</div>
+    <div class="posters">
+        <img class="poster" src="https://image.tmdb.org/t/p/w500/fcid9FD9aivYvX696YvD99p7p9p.jpg" onclick="window.open('https://animesama.tv/search?q=one%20piece')">
+        <img class="poster" src="https://image.tmdb.org/t/p/w500/g19969Yfo9Xp09f39idSglI9op6.jpg" onclick="window.open('https://animesama.tv/search?q=jujutsu%20kaisen')">
+        <img class="poster" src="https://image.tmdb.org/t/p/w200/hEClqd9786Sk6mTbBy79W7f9p69.jpg" onclick="window.open('https://animesama.tv/search?q=naruto')">
+        </div>
 </div>
 
-<div class="modal" id="modal">
-    <div class="player" id="player"></div>
+<div class="row">
+    <div class="row-title">Films & Séries (Filmoflix)</div>
+    <div class="posters">
+        <img class="poster" src="https://image.tmdb.org/t/p/w500/t6Sna48o9pSjnKgnubO9LsduD9O.jpg" onclick="window.open('https://filmoflix.page/')">
+        <img class="poster" src="https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T6f4L3L.jpg" onclick="window.open('https://filmoflix.page/')">
+    </div>
 </div>
 
 <script>
-const movies = [
- { title:"Kung Fury", img:"https://m.media-amazon.com/images/M/MV5BMjA5OTYyMjg2NF5BMl5BanBnXkFtZTgwOTI4NjgyNTE@._V1_.jpg", url:"https://www.youtube.com/embed/bS5P_LAqiVg", type:"embed" },
- { title:"Big Buck Bunny", img:"https://peach.blender.org/wp-content/uploads/bbb-splash.png", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", type:"direct" }
-];
-
-const grid = document.getElementById("grid");
-const modal = document.getElementById("modal");
-const player = document.getElementById("player");
-
-function render(list){
-    grid.innerHTML = list.map(m => `
-        <div class="card" data-url="${m.url}" data-type="${m.type}">
-            <img src="${m.img}">
-            <h3>${m.title}</h3>
-        </div>
-    `).join("");
-}
-
-grid.onclick = e => {
-    const card = e.target.closest(".card");
-    if(!card) return;
-
-    player.innerHTML = `
-        <div class="close">✕</div>
-        ${card.dataset.type === "embed"
-            ? `<iframe src="${card.dataset.url}?autoplay=1" allowfullscreen></iframe>`
-            : `<video src="${card.dataset.url}" controls autoplay></video>`
-        }
-    `;
-    modal.style.display = "flex";
-};
-
-modal.onclick = e => {
-    if(e.target === modal || e.target.classList.contains("close")){
-        modal.style.display = "none";
-        player.innerHTML = "";
-    }
-};
-
-document.getElementById("search").oninput = e => {
-    const v = e.target.value.toLowerCase();
-    render(movies.filter(m => m.title.toLowerCase().includes(v)));
-};
-
-render(movies);
+    window.addEventListener('scroll', () => {
+        const nav = document.getElementById('navbar');
+        if (window.scrollY > 100) nav.style.background = '#111';
+        else nav.style.background = 'linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)';
+    });
 </script>
 
 </body>
